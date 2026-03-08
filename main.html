@@ -138,15 +138,17 @@
         <div
           class="flex flex-col items-stretch gap-6 rounded-t-lg border-b border-[#E4E4E7] bg-white p-6"
         >
-          <div class="flex items-center justify-between gap-4 self-stretch">
-            <div class="flex items-center gap-2">
+          <div
+            class="flex flex-col gap-4 self-stretch sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div class="flex items-center gap-3">
               <div
-                class="h-[50px] w-[50px] rounded-full bg-[#ECE4FF] flex items-center justify-center"
+                class="h-10 w-10 sm:h-12 sm:w-12 md:h-[50px] md:w-[50px] rounded-full bg-[#ECE4FF] flex items-center justify-center"
               >
                 <img
                   src="./assets/Aperture.svg"
                   alt="Aperture"
-                  class="h-8 w-8"
+                  class="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8"
                 />
               </div>
               <div class="flex flex-col gap-0.5">
@@ -161,16 +163,18 @@
                 >
               </div>
             </div>
-            <div class="flex items-center gap-4">
+            <div
+              class="flex flex-wrap items-center gap-3 sm:justify-end"
+            >
               <div class="flex items-center gap-2">
                 <span class="h-3 w-3 shrink-0 rounded-full bg-[#00A96E]"></span>
-                <span class="text-[16px] font-medium leading-[1.3]"
+                <span class="text-sm sm:text-[16px] font-medium leading-[1.3]"
                   >Open (<span id="openCount">0</span>)</span
                 >
               </div>
               <div class="flex items-center gap-2">
                 <span class="h-3 w-3 shrink-0 rounded-full bg-[#A855F7]"></span>
-                <span class="text-[16px] font-medium leading-[1.3]"
+                <span class="text-sm sm:text-[16px] font-medium leading-[1.3]"
                   >Closed (<span id="closedCount">0</span>)</span
                 >
               </div>
