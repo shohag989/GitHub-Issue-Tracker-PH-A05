@@ -238,16 +238,24 @@
           <div class="flex items-start justify-between gap-4">
             <h3 id="modalTitle" class="text-2xl font-bold text-[#1F2937] flex-1"></h3>
           </div>
-          <div class="flex flex-row items-center gap-2 flex-shrink-0">
+          <div
+            class="flex w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm sm:text-base"
+          >
             <span
               id="modalStatusText"
               class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
             ></span>
             <p class="text-xl text-[#64748B] font-bold"> •</p>
-            <span id="modalByLabel" class="text-sm text-[#64748B]">Opened by</span>
-            <span id="modalAuthorInfo" class="text-sm text-[#64748B]"></span>
+            <span id="modalByLabel" class="text-[#64748B]">Opened by</span>
+            <span
+              id="modalAuthorInfo"
+              class="text-[#64748B] break-words"
+            ></span>
             <p class="text-xl text-[#64748B] font-bold"> •</p>
-            <span id="modalDate" class="text-sm text-[#64748B]"></span>
+            <span
+              id="modalDate"
+              class="text-[#64748B] whitespace-nowrap sm:whitespace-normal"
+            ></span>
           </div>
 
           <!-- Labels -->
