@@ -276,7 +276,7 @@ function escapeHtml(text) {
 async function openIssueModal(id) {
   try {
     let issue = null;
-
+    
     // First try to get from API
     try {
       const res = await fetch(
@@ -292,7 +292,7 @@ async function openIssueModal(id) {
 
     // If not found in API, check local data
     if (!issue) {
-      issue = allIssuesData.find((i) => i.id === id || i.id === parseInt(id));
+      issue = allIssuesData.find(i => i.id === id || i.id === parseInt(id));
       if (!issue) {
         alert("Issue not found");
         return;
@@ -301,8 +301,7 @@ async function openIssueModal(id) {
 
     // Set modal content
     document.getElementById("modalTitle").textContent = issue.title;
-    document.getElementById("modalDescription").textContent =
-      issue.description || "";
+    document.getElementById("modalDescription").textContent = issue.description || "";
     document.getElementById("modalStatusText").textContent =
       issue.status.charAt(0).toUpperCase() + issue.status.slice(1);
     document.getElementById("modalAuthor").textContent = issue.author;
@@ -315,7 +314,6 @@ async function openIssueModal(id) {
       year: "numeric",
     });
     document.getElementById("modalDate").textContent = formattedDate;
-    document.getElementById("modalAuthorInfo").textContent = issue.author;
 
     // Set priority badge
     const priorityBadge = document.getElementById("modalPriority");
@@ -331,7 +329,7 @@ async function openIssueModal(id) {
       : issue.labels
         ? [issue.labels]
         : [];
-
+    
     if (labels.length > 0) {
       labels.forEach((label) => {
         const labelClass = getLabelClass(label);
