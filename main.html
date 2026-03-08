@@ -38,19 +38,19 @@
     <header
       class="flex w-full flex-col gap-3 border-b border-[#E9E9E9] bg-white px-4 py-3 sm:h-[78px] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-[16px] lg:px-[80px]"
     >
-      <div class="flex items-center gap-1">
+      <div class="flex items-center justify-center gap-1 sm:justify-start">
         <img
           src="./assets/github-logo-nav.svg"
           alt="GitHub"
           class="h-[37px] w-[36px]"
         />
-        <span class="text-[24px] font-semibold leading-[1.3]"
+        <span class="text-[24px] font-semibold leading-[1.3] text-center sm:text-left"
           >GitHub Issues Tracker</span
         >
       </div>
 
       <div
-        class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-4"
+        class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-5"
       >
         <div class="relative w-full sm:w-[300px]">
           <div
@@ -78,21 +78,24 @@
             <!-- Suggestions will be added here -->
           </div>
         </div>
-        <button
-          onclick="openNewIssueModal()"
-          class="text-center justify-center flex h-[44px] w-full items-center justify-center gap-1 rounded bg-[#4A00FF] px-4 py-3 sm:w-auto"
-        >
-          <i class="fa-solid fa-plus text-white mr-1"></i>
-          <span class="text-[16px] font-semibold leading-[1.3] text-white text-center"
-            >New Issue</span
+        <div class="flex w-full gap-4 sm:w-auto">
+          <button
+            onclick="openNewIssueModal()"
+            class="flex h-[44px] flex-[4] items-center justify-center gap-1 rounded bg-[#4A00FF] px-4 py-3 text-center sm:flex-none sm:w-auto"
           >
-        </button>
-        <button
-          onclick="logout()"
-          class="flex h-[44px] w-full items-center justify-center gap-2 rounded border border-[#E4E4E7] bg-white px-4 py-3 sm:w-auto hover:bg-gray-50 transition-colors"
-        >
-          <i class="fa-solid fa-right-from-bracket text-[#1F2937]"></i>
-        </button>
+            <i class="fa-solid fa-plus text-white mr-1"></i>
+            <span
+              class="text-[16px] font-semibold leading-[1.3] text-white text-center"
+              >New Issue</span
+            >
+          </button>
+          <button
+            onclick="logout()"
+            class="flex h-[44px] flex-[1] items-center justify-center gap-2 rounded border border-[#E4E4E7] bg-white px-4 py-3 hover:bg-gray-50 transition-colors sm:flex-none sm:w-auto"
+          >
+            <i class="fa-solid fa-right-from-bracket text-[#1F2937]"></i>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -236,16 +239,16 @@
             <h3 id="modalTitle" class="text-2xl font-bold text-[#1F2937] flex-1"></h3>
           </div>
           <div class="flex flex-row items-center gap-2 flex-shrink-0">
-              <span
-                id="modalStatusText"
-                class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold bg-[#00A96E] text-[#fff] whitespace-nowrap"
-              ></span>
-              <p class="text-xl text-[#64748B] font-bold"> •</p>
-              <span class="text-sm text-[#64748B]">Opened by</span>
-              <span id="modalAuthorInfo" class="text-sm text-[#64748B]"></span>
-              <p class="text-xl text-[#64748B] font-bold"> •</p>
-              <span id="modalDate" class="text-sm text-[#64748B]"></span>
-            </div>
+            <span
+              id="modalStatusText"
+              class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
+            ></span>
+            <p class="text-xl text-[#64748B] font-bold"> •</p>
+            <span id="modalByLabel" class="text-sm text-[#64748B]">Opened by</span>
+            <span id="modalAuthorInfo" class="text-sm text-[#64748B]"></span>
+            <p class="text-xl text-[#64748B] font-bold"> •</p>
+            <span id="modalDate" class="text-sm text-[#64748B]"></span>
+          </div>
 
           <!-- Labels -->
           <div id="modalLabel" class="flex flex-wrap gap-2 items-center"></div>

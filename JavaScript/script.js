@@ -301,13 +301,48 @@ async function openIssueModal(id) {
 
     // Set modal content
     document.getElementById("modalTitle").textContent = issue.title;
-    document.getElementById("modalDescription").textContent = issue.description || "";
-    document.getElementById("modalStatusText").textContent =
-      issue.status.charAt(0).toUpperCase() + issue.status.slice(1);
-    document.getElementById("modalAuthor").textContent = issue.author;
+    document.getElementById("modalDescription").textContent =
+      issue.description || "";
 
-    // Format date
-    const dateObj = new Date(issue.createdAt);
+    const modalStatusText = document.getElementById("modalStatusText");
+    const modalByLabel = document.getElementById("modalByLabel");
+    const modalAuthorInfo = document.getElementById("modalAuthorInfo");
+
+    const statusLabel =
+      issue.status.charAt(0).toUpperCase() + issue.status.slice(1);
+    modalStatusText.textContent = statusLabel;
+
+    // Status badge colors based on status
+    if (issue.status === "open") {
+      modalStatusText.className =
+        "inline-block px-3 py-1.5 rounded-full text-xs font-semibold bg-[#CBFADB] text-[#00A96E] whitespace-nowrap";
+    } else {
+      modalStatusText.className =
+        "inline-block px-3 py-1.5 rounded-full text-xs font-semibold bg-[#F0E2FF] text-[#A855F7] whitespace-nowrap";
+    }
+
+    // Opened/Closed by info
+    const openedBy = issue.openedBy || issue.author || "Unknown";
+    const closedBy = issue.closedBy || issue.author || "Unknown";
+
+    if (issue.status === "closed") {
+      modalByLabel.textContent = "Closed by";
+      modalAuthorInfo.textContent = closedBy;
+    } else {
+      modalByLabel.textContent = "Opened by";
+      modalAuthorInfo.textContent = openedBy;
+    }
+
+    // Assignee section
+    document.getElementById("modalAuthor").textContent =
+      issue.assignee || issue.author || "Unassigned";
+
+    // Format date: use closedAt for closed issues if available, otherwise createdAt
+    const dateToUse =
+      issue.status === "closed" && issue.closedAt
+        ? issue.closedAt
+        : issue.createdAt;
+    const dateObj = new Date(dateToUse);
     const formattedDate = dateObj.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
