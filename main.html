@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Issues Tracker — All Issues</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="shortcut icon" href="./assets/favicon.webp" type="image/x-icon">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind = tailwind || {};
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              geist: ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./Css/style.css" />
+  </head>
+
+  <body class="min-h-screen bg-[#F8FAFC] font-geist text-[#1F2937]">
+    <!-- Top Navigation -->
+    <header
+      class="flex w-full flex-col gap-3 border-b border-[#E9E9E9] bg-white px-4 py-3 sm:h-[78px] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-[16px] lg:px-[80px]"
+    >
+      <div class="flex items-center gap-1">
+        <img
+          src="./assets/github-logo-nav.svg"
+          alt="GitHub"
+          class="h-[37px] w-[36px]"
+        />
+        <span class="text-[24px] font-semibold leading-[1.3]"
+          >GitHub Issues Tracker</span
+        >
+      </div>
+
+      <div
+        class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-4"
+      >
+        <div class="relative w-full sm:w-[300px]">
+          <div
+            class="flex h-[44px] w-full items-center gap-1 rounded border border-[#E4E4E7] bg-white px-4"
+          >
+            <img
+              src="./assets/magnifying-glass.svg"
+              alt=""
+              class="h-4 w-4 shrink-0"
+            />
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search issues..."
+              oninput="liveSearch()"
+              onkeypress="if (event.key === 'Enter') searchIssue();"
+              class="flex-1 bg-transparent text-[16px] font-normal leading-none text-[#1F2937] placeholder:text-[#64748B] focus:outline-none"
+            />
+          </div>
+          <!-- Search Suggestions Dropdown -->
+          <div
+            id="searchSuggestions"
+            class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-[#E4E4E7] rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          >
+            <!-- Suggestions will be added here -->
+          </div>
+        </div>
+        <button
+          onclick="openNewIssueModal()"
+          class="text-center justify-center flex h-[44px] w-full items-center justify-center gap-1 rounded bg-[#4A00FF] px-4 py-3 sm:w-auto"
+        >
+          <i class="fa-solid fa-plus text-white mr-1"></i>
+          <span class="text-[16px] font-semibold leading-[1.3] text-white text-center"
+            >New Issue</span
+          >
+        </button>
+        <button
+          onclick="logout()"
+          class="flex h-[44px] w-full items-center justify-center gap-2 rounded border border-[#E4E4E7] bg-white px-4 py-3 sm:w-auto hover:bg-gray-50 transition-colors"
+        >
+          <i class="fa-solid fa-right-from-bracket text-[#1F2937]"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main
+      class="mx-auto flex w-full max-w-[1600px] flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:px-[80px] lg:py-[60px]"
+    >
+      <!-- Filter Tabs -->
+      <div
+        class="flex w-full items-center gap-2 rounded-lg border border-white bg-white p-4 shadow-[0px_1px_6px_0px_rgba(0,0,0,0.08)] sm:p-6"
+      >
+        <button
+          class="filter-tab flex h-10 w-[120px] items-center justify-center gap-1.5 rounded border border-[#4A00FF] bg-[#4A00FF] px-3 py-2"
+          onclick="loadIssues('all')"
+        >
+          <span class="text-[16px] font-semibold leading-none text-white"
+            >All</span
+          >
+        </button>
+        <button
+          class="filter-tab flex h-10 w-[120px] items-center justify-center gap-1.5 rounded border border-[#E4E4E7] bg-white px-3 py-2"
+          onclick="loadIssues('open')"
+        >
+          <span class="text-[16px] font-medium leading-none text-[#64748B]"
+            >Open</span
+          >
+        </button>
+        <button
+          class="filter-tab flex h-10 w-[120px] items-center justify-center gap-1.5 rounded border border-[#E4E4E7] bg-white px-3 py-2"
+          onclick="loadIssues('closed')"
+        >
+          <span class="text-[16px] font-medium leading-none text-[#64748B]"
+            >Closed</span
+          >
+        </button>
+      </div>
+
+      <!-- Issues Card Container -->
+      <div
+        class="flex flex-col items-stretch self-stretch shadow-[0px_5px_10px_0px_rgba(0,0,0,0.08)]"
+      >
+        <!-- Header -->
+        <div
+          class="flex flex-col items-stretch gap-6 rounded-t-lg border-b border-[#E4E4E7] bg-white p-6"
+        >
+          <div class="flex items-center justify-between gap-4 self-stretch">
+            <div class="flex items-center gap-2">
+              <div
+                class="h-[50px] w-[50px] rounded-full bg-[#ECE4FF] flex items-center justify-center"
+              >
+                <img
+                  src="./assets/Aperture.svg"
+                  alt="Aperture"
+                  class="h-8 w-8"
+                />
+              </div>
+              <div class="flex flex-col gap-0.5">
+                <span
+                  class="text-[20px] font-semibold leading-[1.3]"
+                  id="issueCount"
+                  >0 Issues</span
+                >
+                <span
+                  class="text-[16px] font-normal leading-[1.3] text-[#64748B]"
+                  >Track and manage your project issues</span
+                >
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <span class="h-3 w-3 shrink-0 rounded-full bg-[#00A96E]"></span>
+                <span class="text-[16px] font-medium leading-[1.3]"
+                  >Open (<span id="openCount">0</span>)</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="h-3 w-3 shrink-0 rounded-full bg-[#A855F7]"></span>
+                <span class="text-[16px] font-medium leading-[1.3]"
+                  >Closed (<span id="closedCount">0</span>)</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="rounded-b-lg bg-[#FBFBFB] p-6">
+          <div
+            id="issuesContainer"
+            class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            <!-- Issues will be loaded here -->
+          </div>
+
+          <!-- Empty State -->
+          <div
+            id="emptyState"
+            class="hidden flex flex-col items-center justify-center gap-4 py-12"
+          >
+            <svg
+              class="h-16 w-16 text-[#64748B]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <p class="text-center text-[16px] font-normal text-[#64748B]">
+              No issues found
+            </p>
+          </div>
+
+          <!-- Loader -->
+          <div
+            id="loader"
+            class="hidden flex flex-col items-center justify-center gap-4 py-12"
+          >
+            <div
+              class="h-8 w-8 animate-spin rounded-full border-4 border-[#E4E4E7] border-t-[#4A00FF]"
+            ></div>
+            <p class="text-[16px] font-normal text-[#64748B]">
+              Loading issues...
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Issue Details Modal -->
+    <dialog id="issueModal" class="modal">
+      <div class="modal-box w-full max-w-2xl">
+        <div class="flex flex-col gap-6">
+          <!-- Header with Title and Status Badge -->
+          <div class="flex items-start justify-between gap-4">
+            <h3 id="modalTitle" class="text-2xl font-bold text-[#1F2937] flex-1"></h3>
+          </div>
+          <div class="flex flex-row items-center gap-2 flex-shrink-0">
+              <span
+                id="modalStatusText"
+                class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold bg-[#00A96E] text-[#fff] whitespace-nowrap"
+              ></span>
+              <p class="text-xl text-[#64748B] font-bold"> •</p>
+              <span class="text-sm text-[#64748B]">Opened by</span>
+              <span id="modalAuthorInfo" class="text-sm text-[#64748B]"></span>
+              <p class="text-xl text-[#64748B] font-bold"> •</p>
+              <span id="modalDate" class="text-sm text-[#64748B]"></span>
+            </div>
+
+          <!-- Labels -->
+          <div id="modalLabel" class="flex flex-wrap gap-2 items-center"></div>
+
+          <!-- Description -->
+          <div>
+            <p id="modalDescription" class="text-[#64748B] leading-relaxed text-sm"></p>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-t border-[#E4E4E7]"></div>
+
+          <!-- Info Section: Assignee and Priority -->
+          <div class="grid grid-cols-2 gap-8">
+            <!-- Assignee -->
+            <div>
+              <p class="text-xs font-medium text-[#64748B] mb-2">ASSIGNEE</p>
+              <p id="modalAuthor" class="text-sm font-semibold text-[#1F2937]"></p>
+            </div>
+            <!-- Priority -->
+            <div>
+              <p class="text-xs font-medium text-[#64748B] mb-2">PRIORITY</p>
+              <span
+                id="modalPriority"
+                class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold"
+              ></span>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-t border-[#E4E4E7]"></div>
+
+          <!-- Close Button -->
+          <div class="flex justify-end">
+            <form method="dialog">
+              <button class="bg-[#4A00FF] hover:bg-[#3a00dd] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">
+                Close
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+
+    <!-- New Issue Modal -->
+    <dialog id="newIssueModal" class="modal modal-custom">
+      <div
+        class="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-4"
+      >
+        <div
+          class="flex w-full max-w-[700px] flex-col justify-center gap-6 rounded-xl bg-white p-6 sm:p-8"
+        >
+          <!-- Header -->
+          <div class="flex items-center justify-between gap-4">
+            <h2 class="text-[24px] font-bold leading-[1.3] text-[#1F2937]">
+              Create New Issue
+            </h2>
+            <button
+              onclick="document.getElementById('newIssueModal').close()"
+              class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-[#F8FAFC] transition-colors"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Form -->
+          <form
+            onsubmit="
+              createNewIssue();
+              return false;
+            "
+            class="flex flex-col gap-6"
+          >
+            <!-- Title -->
+            <div class="flex flex-col gap-2">
+              <label
+                for="newIssueTitle"
+                class="text-[16px] font-medium leading-[1.3] text-[#1F2937]"
+              >
+                Title
+              </label>
+              <input
+                id="newIssueTitle"
+                type="text"
+                placeholder="Enter issue title"
+                required
+                class="w-full rounded-[8px] border border-[#E4E4E7] bg-white px-[16px] py-[12px] text-[16px] font-normal leading-[1] text-[#1F2937] placeholder:text-[#64748B] focus:border-[#4A00FF] focus:outline-none transition-colors"
+              />
+            </div>
+
+            <!-- Description -->
+            <div class="flex flex-col gap-2">
+              <label
+                for="newIssueDesc"
+                class="text-[16px] font-medium leading-[1.3] text-[#1F2937]"
+              >
+                Description
+              </label>
+              <textarea
+                id="newIssueDesc"
+                placeholder="Enter issue description"
+                rows="4"
+                class="w-full rounded-[8px] border border-[#E4E4E7] bg-white px-[16px] py-[12px] text-[16px] font-normal leading-[1.3] text-[#1F2937] placeholder:text-[#64748B] focus:border-[#4A00FF] focus:outline-none transition-colors resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Priority and Status -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Priority -->
+              <div class="flex flex-col gap-2">
+                <label
+                  for="newIssuePriority"
+                  class="text-[16px] font-medium leading-[1.3] text-[#1F2937]"
+                >
+                  Priority
+                </label>
+                <select
+                  id="newIssuePriority"
+                  class="w-full rounded-[8px] border border-[#E4E4E7] bg-white px-[16px] py-[12px] text-[16px] font-normal leading-[1] text-[#1F2937] focus:border-[#4A00FF] focus:outline-none transition-colors"
+                >
+                  <option value="LOW">Low</option>
+                  <option value="MEDIUM" selected>Medium</option>
+                  <option value="HIGH">High</option>
+                </select>
+              </div>
+
+              <!-- Status -->
+              <div class="flex flex-col gap-2">
+                <label
+                  for="newIssueStatus"
+                  class="text-[16px] font-medium leading-[1.3] text-[#1F2937]"
+                >
+                  Status
+                </label>
+                <select
+                  id="newIssueStatus"
+                  class="w-full rounded-[8px] border border-[#E4E4E7] bg-white px-[16px] py-[12px] text-[16px] font-normal leading-[1] text-[#1F2937] focus:border-[#4A00FF] focus:outline-none transition-colors"
+                >
+                  <option value="open" selected>Open</option>
+                  <option value="closed">Closed</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4 justify-end">
+              <button
+                type="button"
+                onclick="document.getElementById('newIssueModal').close()"
+                class="flex h-11 items-center justify-center gap-1 rounded-[8px] border border-[#E4E4E7] bg-white px-6 py-3 text-[16px] font-semibold leading-[1.3] text-[#1F2937] hover:bg-[#F8FAFC] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="flex h-11 items-center justify-center gap-1 rounded-[8px] bg-[#4A00FF] px-6 py-3 text-[16px] font-semibold leading-[1.3] text-white hover:bg-[#3a00dd] transition-colors"
+              >
+                Create Issue
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- DaisyUI -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="./JavaScript/script.js"></script>
+    <script>
+      function logout() {
+        localStorage.removeItem("isLoggedIn");
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>
